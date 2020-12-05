@@ -9,34 +9,28 @@
 Note: Gathered only 5 days due to exception
 
 
-*** MANUALLY ADDED ***
-05/12 08.00h
-{'name': 'elections2020_single',
-'search': '#Elections2020',
-'lang': 'en',
-'since': None,
-'until': None
-}
+Sat, 05 Dec 2020 07:39:21
+Name = elections2020_single
+Search = #Elections2020
+Lang = en
+Since = None
+Until = None
 
 
-*** MANUALLY ADDED ***
-05/12 08.00h
-{'name': 'vaccine_positive',
-'search': '#Vaccine :)',
-'lang': 'en',
-'since': None,
-'until': None
-}
+Sat, 05 Dec 2020 07:39:23
+Name = vaccine_positive
+Search = #Vaccine :)
+Lang = en
+Since = None
+Until = None
 
 
-*** MANUALLY ADDED ***
-05/12 08.00h
-{'name': 'vaccine_negative',
-'search': '#Vaccine :(',
-'lang': 'en',
-'since': None,
-'until': None
-}
+Sat, 05 Dec 2020 07:39:24
+Name = vaccine_negative
+Search = #Vaccine :(
+Lang = en
+Since = None
+Until = None
 
 
 *** MANUALLY ADDED ***
