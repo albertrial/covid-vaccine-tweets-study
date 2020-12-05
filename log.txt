@@ -53,3 +53,23 @@ Until = None
 Items = 100000
 
 
+Sat, 05 Dec 2020 18:04:40
+Name = vaccine_top3_hashtags
+Search = #vaccine OR #vacuna OR #vaccin
+Lang = None
+Since = None
+Until = None
+Items = 1000000
+Note: Died due to Server
+
+
+Sun, 06 Dec 2020 00:02:43
+Name = vaccine_top3_hashtags
+Search = #vaccine OR #vacuna OR #vaccin
+Lang = None
+Since = None
+Until = None
+Items = 1000000
+Max_id = 1334552100412469250
+
+

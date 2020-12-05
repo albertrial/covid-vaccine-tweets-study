@@ -1,7 +1,7 @@
 # import pprint
 import tweepy
 import pymongo
-from time import time, strftime, localtime, gmtime
+from time import time, strftime, localtime, gmtime, sleep
 from keys import API_KEY, API_KEY_SECRET
 
 
@@ -17,12 +17,9 @@ def local_time_str():
 def log(file, query):
 	with open(file, 'a') as f:
 		f.write(strftime('%a, %d %b %Y %H:%M:%S', localtime()) + '\n')
-		f.write('Name = ' + query['name'] + '\n')
-		f.write('Search = ' + query['search'] + '\n')
-		f.write('Lang = ' + str(query['lang']) + '\n')
-		f.write('Since = ' + str(query['since']) + '\n')
-		f.write('Until = ' + str(query['until']) + '\n')
-		f.write('Items = ' + str(query['items']) + '\n\n\n')
+		for k in query:
+			f.write('{} = {}\n'.format(k.capitalize(), query[k]))
+		f.write('\n\n')
 
 
 def make_query(api, db, query):
@@ -34,7 +31,7 @@ def make_query(api, db, query):
 	since = time()
 	print('Collecting tweets for query \"{}\"...'.format(query['name']))
 
-	cursor = tweepy.Cursor(api.search, q=query['search'], lang=query['lang'], since=query['since'], until=query['until'], tweet_mode='extended').items(query['items'])
+	cursor = tweepy.Cursor(api.search, q=query['search'], lang=query['lang'], since=query['since'], until=query['until'], max_id=query['max_id'], tweet_mode='extended').items(query['items'])
 
 	while True:
 		try:
@@ -54,7 +51,8 @@ def make_query(api, db, query):
 					print('{} --> Collected {:6d} tweets in {}'.format(local_time_str(), c, wall_time_str(t)))
 			break
 		except tweepy.error.TweepError as e:
-			print('{} --> {}'.format(local_time_str(), e))
+			print('{} --> {}. Waiting 10 minutes.'.format(local_time_str(), e))
+			time.sleep(600)
 			continue
 
 	print('Done collecting tweets for query {}.\n\n'.format(query['name']))
@@ -88,12 +86,21 @@ if __name__ == '__main__':
 	api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 	queries = [
-		{'name': 'covid_hashtags',
-		'search': '#COVID19 OR #COVID',
+		{'name': 'vaccine_top3_hashtags',
+		'search': '#vaccine OR #vacuna OR #vaccin',
 		'lang': None,
 		'since': None,
 		'until': None,
-		'items': 100000
+		'items': 1000000,
+		'max_id': 1334552100412469250
+		},
+		{'name': 'vaccine_top3_words',
+		'search': 'vaccine OR vacuna OR vaccin',
+		'lang': None,
+		'since': None,
+		'until': None,
+		'max_id': None,
+		'items': 150000
 		},
 	]
 
