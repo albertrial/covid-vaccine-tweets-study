@@ -21,7 +21,8 @@ def log(file, query):
 		f.write('Search = ' + query['search'] + '\n')
 		f.write('Lang = ' + str(query['lang']) + '\n')
 		f.write('Since = ' + str(query['since']) + '\n')
-		f.write('Until = ' + str(query['until']) + '\n\n\n')
+		f.write('Until = ' + str(query['until']) + '\n')
+		f.write('Items = ' + str(query['items']) + '\n\n\n')
 
 
 def make_query(api, db, query):
@@ -33,7 +34,7 @@ def make_query(api, db, query):
 	since = time()
 	print('Collecting tweets for query \"{}\"...'.format(query['name']))
 
-	cursor = tweepy.Cursor(api.search, q=query['search'], lang=query['lang'], since=query['since'], until=query['until'], tweet_mode='extended').items()
+	cursor = tweepy.Cursor(api.search, q=query['search'], lang=query['lang'], since=query['since'], until=query['until'], tweet_mode='extended').items(query['items'])
 
 	while True:
 		try:
@@ -87,41 +88,12 @@ if __name__ == '__main__':
 	api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 	queries = [
-		# {'name': 'vaccine_langs',
-		# 'search': '#Vaccine OR #Vacuna OR #Vaccin OR #Impfstoffe OR #Vaccino',
-		# 'lang': None,
-		# 'since': None,
-		# 'until': None
-		# },
-		{'name': 'elections2020_single',
-		'search': '#Elections2020',
-		'lang': 'en',
-		'since': None,
-		'until': None
-		},
-		{'name': 'vaccine_positive',
-		'search': '#Vaccine :)',
-		'lang': 'en',
-		'since': None,
-		'until': None
-		},
-		{'name': 'vaccine_negative',
-		'search': '#Vaccine :(',
-		'lang': 'en',
-		'since': None,
-		'until': None
-		},
-		{'name': 'vaccine_wo_hashtag',
-		'search': 'vaccine',
-		'lang': 'en',
-		'since': None,
-		'until': None
-		},
-		{'name': 'covid_no_lang',
-		'search': '#COVID19',
+		{'name': 'covid_hashtags',
+		'search': '#COVID19 OR #COVID',
 		'lang': None,
 		'since': None,
-		'until': None
+		'until': None,
+		'items': 100000
 		},
 	]
 

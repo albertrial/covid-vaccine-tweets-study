@@ -1,0 +1,61 @@
+*** MANUALLY ADDED ***
+04/12 21.00h
+{'name': 'vaccine_langs',
+'search': '#Vaccine OR #Vacuna OR #Vaccin OR #Impfstoffe OR #Vaccino',
+'lang': None,
+'since': None,
+'until': None
+}
+Note: Gathered only 5 days due to exception
+
+
+*** MANUALLY ADDED ***
+05/12 08.00h
+{'name': 'elections2020_single',
+'search': '#Elections2020',
+'lang': 'en',
+'since': None,
+'until': None
+}
+
+
+*** MANUALLY ADDED ***
+05/12 08.00h
+{'name': 'vaccine_positive',
+'search': '#Vaccine :)',
+'lang': 'en',
+'since': None,
+'until': None
+}
+
+
+*** MANUALLY ADDED ***
+05/12 08.00h
+{'name': 'vaccine_negative',
+'search': '#Vaccine :(',
+'lang': 'en',
+'since': None,
+'until': None
+}
+
+
+*** MANUALLY ADDED ***
+05/12 08.00h
+{'name': 'vaccine_wo_hashtag',
+'search': 'vaccine',
+'lang': 'en',
+'since': None,
+'until': None
+}
+Note: Killed
+
+
+Sat, 05 Dec 2020 13:34:14
+Name = covid_hashtags
+Search = #COVID19 OR #COVID
+Lang = None
+Since = None
+Until = None
+Items = 100000
+
+
