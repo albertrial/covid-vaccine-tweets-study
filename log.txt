@@ -84,3 +84,23 @@ Items = 1000000
 Max_id = 1333861537669386243
 
 
+Sun, 06 Dec 2020 10:19:19
+Name = vaccine_top3_words
+Search = vaccine OR vacuna OR vaccin
+Lang = None
+Since = None
+Until = None
+Max_id = None
+Items = 150000
+
+
+Sun, 06 Dec 2020 16:12:27
+Name = vaccine_top3_words
+Search = vaccine OR vacuna OR vaccin
+Lang = None
+Since = None
+Until = None
+Max_id = 1335349527549767690
+Items = 100000
+
+
