@@ -52,7 +52,7 @@ def make_query(api, db, query):
 			break
 		except tweepy.error.TweepError as e:
 			print('{} --> {}. Waiting 10 minutes.'.format(local_time_str(), e))
-			time.sleep(600)
+			sleep(600)
 			continue
 
 	print('Done collecting tweets for query {}.\n\n'.format(query['name']))
@@ -92,7 +92,7 @@ if __name__ == '__main__':
 		'since': None,
 		'until': None,
 		'items': 1000000,
-		'max_id': 1334552100412469250
+		'max_id': 1333861537669386243
 		},
 		{'name': 'vaccine_top3_words',
 		'search': 'vaccine OR vacuna OR vaccin',
