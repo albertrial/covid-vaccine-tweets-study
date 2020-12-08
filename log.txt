@@ -104,3 +104,33 @@ Max_id = 1335349527549767690
 Items = 100000
 
 
+Sun, 06 Dec 2020 22:32:00
+Name = covid_hashtags_24h
+Search = #COVID19 OR #COVID
+Lang = None
+Since = 2020-12-05
+Until = 2020-12-05
+Max_id = None
+Items = 1000000
+
+
+Sun, 06 Dec 2020 22:32:47
+Name = covid_hashtags_24h
+Search = #COVID19 OR #COVID
+Lang = None
+Since = 2020-12-05
+Until = 2020-12-06
+Max_id = None
+Items = 1000000
+
+
+Tue, 08 Dec 2020 09:24:30
+Name = covid_vaccine
+Search = covid vaccine OR vacuna OR vaccin
+Lang = None
+Since = None
+Until = None
+Max_id = None
+Items = 50000
+
+
