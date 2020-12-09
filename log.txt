@@ -134,3 +134,33 @@ Max_id = None
 Items = 50000
 
 
+Tue, 08 Dec 2020 15:31:00
+Name = #covid_vaccine
+Search = #covid OR #covid19 vaccine OR vacuna OR vaccin
+Lang = None
+Since = None
+Until = None
+Max_id = None
+Items = 50000
+
+
+Tue, 08 Dec 2020 17:30:13
+Name = #covid_vaccine
+Search = #covid OR #covid19 vaccine OR vacuna OR vaccin
+Lang = None
+Since = None
+Until = None
+Max_id = 1335775933379137536
+Items = 1000000
+
+
+Wed, 09 Dec 2020 19:57:33
+Name = #covid_vaccine
+Search = #covid OR #covid19 vaccine OR vacuna OR vaccin
+Lang = None
+Since = None
+Until = None
+Max_id = None
+Items = 0
+
+
