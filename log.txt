@@ -164,3 +164,73 @@ Max_id = None
 Items = 0
 
 
+Fri, 11 Dec 2020 17:22:18
+Name = #covid_vaccine
+Search = #covid OR #covid19 vaccine OR vacuna OR vaccin
+Lang = None
+Since = None
+Until = None
+Max_id = None
+Items = 0
+
+
+Mon, 14 Dec 2020 08:57:32
+Name = #covid_vaccine
+Search = #covid OR #covid19 vaccine OR vacuna OR vaccin
+Lang = None
+Since = None
+Until = None
+Max_id = None
+Items = 0
+
+
+Wed, 16 Dec 2020 07:24:42
+Name = #covid_vaccine
+Search = #covid OR #covid19 vaccine OR vacuna OR vaccin
+Lang = None
+Since = None
+Until = None
+Max_id = None
+Items = 0
+
+
+Thu, 17 Dec 2020 18:44:43
+Name = #covid_vaccine
+Search = #covid OR #covid19 vaccine OR vacuna OR vaccin
+Lang = None
+Since = None
+Until = None
+Max_id = None
+Items = 0
+
+
+Sun, 20 Dec 2020 15:34:04
+Name = #covid_vaccine
+Search = #covid OR #covid19 vaccine OR vacuna OR vaccin
+Lang = None
+Since = None
+Until = None
+Max_id = None
+Items = 0
+
+
+Mon, 21 Dec 2020 13:33:18
+Name = #covid_vaccine
+Search = #covid OR #covid19 vaccine OR vacuna OR vaccin
+Lang = None
+Since = None
+Until = None
+Max_id = None
+Items = 0
+
+
+Tue, 22 Dec 2020 10:17:25
+Name = #covid_vaccine
+Search = #covid OR #covid19 vaccine OR vacuna OR vaccin
+Lang = None
+Since = None
+Until = None
+Max_id = None
+Items = 0
+
+
