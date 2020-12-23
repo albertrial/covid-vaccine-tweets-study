@@ -6,8 +6,8 @@ from collections import defaultdict
 
 def insert_locations():
 	## SET PYMONGO ##
-	client = pymongo.MongoClient('fpsds.synology.me', 27017, username='mongoadmin', password='bda')
-	geo_col = client['geo']['known_locations']
+	# client = pymongo.MongoClient('fpsds.synology.me', 27017, username='mongoadmin', password='bda')
+	# geo_col = client['geo']['known_locations']
 
 	# Open locations file
 	with open('locations.json', encoding='utf-8') as f:
@@ -98,15 +98,20 @@ def insert_locations():
 	for alias in all_aliases.keys():
 		location_aliases[all_aliases[alias]].append(alias)
 
+	json_list = []
 	# Update aliases list and insert to db
 	for loc_id in all_locations:
 		loc = all_locations[loc_id]
 		loc['aliases'] = location_aliases[loc_id]
-		geo_col.insert_one(loc)
+		json_list.append(loc)
+		# geo_col.insert_one(loc)
 		# try:
 		# 	geo_col.insert_one(location)
 		# except pymongo.errors.DuplicateKeyError:
 		# 	continue
+
+	with open('cleaned_locations.json', 'w', encoding='utf-8') as f:
+		json.dump(json_list, f, indent=2)
 
 	print('{} locations added to the database'.format(len(location_aliases)))
 
