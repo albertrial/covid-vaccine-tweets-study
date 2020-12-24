@@ -1,16 +1,18 @@
 import pymongo
 import json
-from carmenxu import normalize, normalize_commas
+from geotag_tweets import normalize, normalize_commas
 from collections import defaultdict
+from keys import MONGODB_KEY
 
 
-def insert_locations():
+def insert_locations(db=False):
 	## SET PYMONGO ##
-	# client = pymongo.MongoClient('fpsds.synology.me', 27017, username='mongoadmin', password='bda')
-	# geo_col = client['geo']['known_locations']
+	if db:
+		client = pymongo.MongoClient('fpsds.synology.me', 27017, username='mongoadmin', password=MONGODB_KEY)
+		geo_col = client['geo']['known_locations']
 
 	# Open locations file
-	with open('locations.json', encoding='utf-8') as f:
+	with open('../data/locations.json', encoding='utf-8') as f:
 		lines = f.readlines()
 	
 	all_aliases = defaultdict(list)
@@ -99,22 +101,20 @@ def insert_locations():
 		location_aliases[all_aliases[alias]].append(alias)
 
 	json_list = []
-	# Update aliases list and insert to db
+	# Update aliases list
 	for loc_id in all_locations:
 		loc = all_locations[loc_id]
 		loc['aliases'] = location_aliases[loc_id]
 		json_list.append(loc)
-		# geo_col.insert_one(loc)
-		# try:
-		# 	geo_col.insert_one(location)
-		# except pymongo.errors.DuplicateKeyError:
-		# 	continue
+	
+	if db:
+		geo_col.insert_many(json_list)
+	else:
+		with open('../data/cleaned_locations.json', 'w', encoding='utf-8') as f:
+			json.dump(json_list, f, indent=2)
 
-	with open('cleaned_locations.json', 'w', encoding='utf-8') as f:
-		json.dump(json_list, f, indent=2)
-
-	print('{} locations added to the database'.format(len(location_aliases)))
+	print('{} locations added to the database'.format(len(json_list)))
 
 
 if __name__ == '__main__':
-	insert_locations()
+	insert_locations(db=False)

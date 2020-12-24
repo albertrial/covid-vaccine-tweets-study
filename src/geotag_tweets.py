@@ -2,6 +2,7 @@ import re
 import json
 import pymongo
 from collections import defaultdict
+from keys import MONGODB_KEY
 
 
 STATE_RE = re.compile(r'(.+),\s*(\w+)')								# Find Structures such Alaior, Menorca
@@ -101,10 +102,10 @@ def ensure_coordinates(_id, force_coordinates):
 
 ######################################################################
 if __name__ == '__main__':
-	client = pymongo.MongoClient('fpsds.synology.me', 27017, username='mongoadmin', password='bda')
+	client = pymongo.MongoClient('fpsds.synology.me', 27017, username='mongoadmin', password=MONGODB_KEY)
 	tweets_col = client['tweets']['#covid_vaccine']
 
-	ALIAS_LOCATION, LOCATION_DICT = load_known_locations('cleaned_locations.json')
+	ALIAS_LOCATION, LOCATION_DICT = load_known_locations('../data/cleaned_locations.json')
 
 	tweets = tweets_col.find({'my_geo': {'$exists': False}}, {'user.location': 1, 'place': 1, 'geo': 1, 'coordinates': 1, '_id': 1})
 	has_coordinates = count = total = 0
@@ -117,8 +118,8 @@ if __name__ == '__main__':
 		tweets_col.update_one({'_id': tweet['_id']}, {'$set': {'my_geo': LOCATION_DICT[location]}})
 		total += 1
 		if total % 5000 == 0:
-			print(total)
+			print('Processed {:6d} tweets'.format(total))
 
 	# print(count, total, 100*count/total)
 	# print(has_coordinates, total, 100*has_coordinates/total)
-	print('{} tweets updated. {:.2f}% of them matched with a location.'.format(total, 100*count/total))
+	print('Done. {} tweets were updated. {:.2f}% of them matched with a location.'.format(total, 100*count/total))
