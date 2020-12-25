@@ -254,3 +254,13 @@ Max_id = None
 Items = 0
 
 
+Fri, 25 Dec 2020 10:25:37
+Name = #covid_vaccine
+Search = #covid OR #covid19 vaccine OR vacuna
+Lang = None
+Since = None
+Until = None
+Max_id = None
+Items = 0
+
+
