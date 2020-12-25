@@ -72,6 +72,14 @@ if __name__ == '__main__':
 	api = tweepy.API(auth, wait_on_rate_limit=True, wait_on_rate_limit_notify=True)
 
 	queries = [
+		# {'name': 'covid_hashtags_24h',
+		# 'search': '#COVID19 OR #COVID',
+		# 'lang': None,
+		# 'since': '2020-12-05',
+		# 'until': '2020-12-06',
+		# 'max_id': None,
+		# 'items': 0
+		# },
 		{'name': '#covid_vaccine',
 		'search': '#covid OR #covid19 vaccine OR vacuna',
 		'lang': None,
