@@ -1,5 +1,4 @@
 import re
-import langid
 import pymongo
 from src.keys import MONGODB_KEY
 from textblob import TextBlob
@@ -101,13 +100,14 @@ if __name__ == '__main__':
     tweets_against = {'positive': 0, 'negative': 0, 'neutral': 0}
     tweets_neutral = {'positive': 0, 'negative': 0, 'neutral': 0}
 
-    for tw in tweets.find({}, {'_id': 1, 'full_text': 1, 'entities.hashtags': 1, 'lang': 1,
-                               'retweeted_status.full_text': 1, 'retweeted_status.entities.hashtags': 1,
-                               'quoted_status.full_text': 1, 'quoted_status.entities.hashtags': 1}):
+    for tw in tweets.find({'hashtag_acceptance': {'$exists': False}},
+                          {'_id': 1, 'full_text': 1, 'entities.hashtags': 1, 'lang': 1,
+                           'retweeted_status.full_text': 1, 'retweeted_status.entities.hashtags': 1,
+                           'quoted_status.full_text': 1, 'quoted_status.entities.hashtags': 1}):
         hashtag_acceptance = get_hashtag_acceptance(get_tweet_hashtags(tw))
         sentiment = 'neutral'
 
-        if tw['lang'] == 'en' and langid.classify(get_tweet_text(tw))[0] == 'en':
+        if tw['lang'] == 'en':
             sentiment = get_tweet_sentiment(clean_text(get_tweet_text(tw)))
 
             if hashtag_acceptance == 'in_favour':
