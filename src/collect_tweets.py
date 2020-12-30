@@ -30,17 +30,20 @@ def make_query(api, db, name, search, lang=None, since=None, until=None, max_id=
 	since_runtime = time()
 	print('Collecting tweets for query \"{}\"...'.format(name))
 
+
+	# Use query parameters and 'extended' mode, to avoid the 140 char limit
 	cursor = tweepy.Cursor(api.search, q=search, lang=lang, since=since, until=until, max_id=max_id, tweet_mode='extended').items(items)
 
 	while True:
 		try:
 			for tweet in cursor:
-
 				json_data = tweet._json
+				# Make MongoDB id be the actual tweet id
 				json_data['_id'] = json_data['id']
 				try:
 					col.insert_one(json_data)
 				except pymongo.errors.DuplicateKeyError:
+					# Ensure we have collected all tweets up to the last one inserted in previous runs
 					print('Duplicated detected')
 					break
 
@@ -50,6 +53,7 @@ def make_query(api, db, name, search, lang=None, since=None, until=None, max_id=
 					print('{} --> Collected {:6d} tweets in {}'.format(local_time_str(), c, wall_time_str(t)))
 			break
 		except tweepy.error.TweepError as e:
+			# Cursor can throw some errors due to Twitter servers' fails/overload. 10 minute cooldown and retry.
 			print('{} --> {}. Waiting 10 minutes.'.format(local_time_str(), e))
 			sleep(600)
 			continue
