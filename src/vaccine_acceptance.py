@@ -50,14 +50,11 @@ def get_tweet_text(tweet):
 
 
 def get_tweet_hashtags(tweet):
+    tw = tweet
     if 'retweeted_status' in tweet:
-        return tweet['retweeted_status']['entities']['hashtags']
+        tw = tweet['retweeted_status']
 
-    elif 'quoted_status' in tweet:
-        return tweet['entities']['hashtags'] + tw['quoted_status']['entities']['hashtags']
-
-    else:
-        return tweet['entities']['hashtags']
+    return tw['entities']['hashtags']
 
 
 def get_tweet_sentiment(text):
@@ -70,14 +67,14 @@ def get_tweet_sentiment(text):
     flair_sentiment = flair_sentence.labels[0].value
     flair_prob = flair_sentence.labels[0].score
 
-    if textblob_sentiment >= 0.25 and flair_sentiment == 'POSITIVE' and flair_prob >= 0.9 and textblob_subjectivity >= 0.4:
+    if textblob_sentiment > 0 and flair_sentiment == 'POSITIVE' and flair_prob >= 0.9 and textblob_subjectivity >= 0.35:
         sentiment = 'positive'
-    elif textblob_sentiment <= -0.15 and flair_sentiment == 'NEGATIVE' and flair_prob >= 0.9 and textblob_subjectivity >= 0.4:
+    elif textblob_sentiment < 0 and flair_sentiment == 'NEGATIVE' and flair_prob >= 0.9 and textblob_subjectivity >= 0.35:
         sentiment = 'negative'
     else:
         sentiment = 'neutral'
 
-    return sentiment  # , textblob_sentiment, flair_sentiment, flair_prob, textblob_subjectivity
+    return sentiment
 
 
 def get_hashtag_acceptance(hashtags):
@@ -89,6 +86,23 @@ def get_hashtag_acceptance(hashtags):
     return 'neutral'
 
 
+def get_vaccine_acceptance(hashtag_acceptance, text_sentiment):
+    vaccine_acceptance = {'hashtag_acceptance': hashtag_acceptance,
+                          'text_sentiment': text_sentiment}
+
+    if hashtag_acceptance == 'neutral':
+        if text_sentiment == 'positive':
+            vaccine_acceptance['global_acceptance'] = 'in_favour'
+        elif text_sentiment == 'negative':
+            vaccine_acceptance['global_acceptance'] = 'against'
+        else:
+            vaccine_acceptance['global_acceptance'] = 'neutral'
+    else:
+        vaccine_acceptance['global_acceptance'] = hashtag_acceptance
+
+    return vaccine_acceptance
+
+
 ######################################################################
 if __name__ == '__main__':
     client = pymongo.MongoClient('fpsds.synology.me', 27017, username='mongoadmin', password=MONGODB_KEY)
@@ -96,41 +110,25 @@ if __name__ == '__main__':
     tweets = db['#covid_vaccine']
 
     count_en = total = 0
-    tweets_in_favour = {'positive': 0, 'negative': 0, 'neutral': 0}
-    tweets_against = {'positive': 0, 'negative': 0, 'neutral': 0}
-    tweets_neutral = {'positive': 0, 'negative': 0, 'neutral': 0}
 
-    for tw in tweets.find({'hashtag_acceptance': {'$exists': False}},
+    for tw in tweets.find({},
                           {'_id': 1, 'full_text': 1, 'entities.hashtags': 1, 'lang': 1,
                            'retweeted_status.full_text': 1, 'retweeted_status.entities.hashtags': 1,
                            'quoted_status.full_text': 1, 'quoted_status.entities.hashtags': 1}):
+
         hashtag_acceptance = get_hashtag_acceptance(get_tweet_hashtags(tw))
-        sentiment = 'neutral'
+        text_sentiment = 'neutral'
 
         if tw['lang'] == 'en':
-            sentiment = get_tweet_sentiment(clean_text(get_tweet_text(tw)))
-
-            if hashtag_acceptance == 'in_favour':
-                tweets_in_favour[sentiment] += 1
-
-            elif hashtag_acceptance == 'against':
-                tweets_against[sentiment] += 1
-
-            elif hashtag_acceptance == 'neutral':
-                tweets_neutral[sentiment] += 1
-
+            text_sentiment = get_tweet_sentiment(clean_text(get_tweet_text(tw)))
             count_en += 1
 
-        tweets.update_one({'_id': tw['_id']}, {'$set': {'hashtag_acceptance': hashtag_acceptance,
-                                                        'text_sentiment': sentiment}})
+        vaccine_acceptance = get_vaccine_acceptance(hashtag_acceptance, text_sentiment)
+        tweets.update_one({'_id': tw['_id']}, {'$set': {'vaccine_acceptance': vaccine_acceptance}})
 
         if total % 5000 == 0:
             print('Processed {:6d} tweets'.format(total))
 
         total += 1
-
-    print("In favour", tweets_in_favour)
-    print("Against", tweets_against)
-    print("Neutral", tweets_neutral)
 
     print('Done. {} tweets were updated. {:.2f}% of them in english.'.format(total, 100 * count_en / total))
