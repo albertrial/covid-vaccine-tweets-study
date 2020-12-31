@@ -74,14 +74,21 @@ def resolve_tweet(tweet, force_coordinates=False):
 
 
 def match_comma_structure(normalized_location):
+	"""
+	Iteratively looks for structures like 'city, state', 'city, state, country'
+	Returns the most left-most match (city if possible)
+	"""
 	match = STATE_RE.search(normalized_location)
 	provisional_match = None
 	while match:
+		all_match = match.group(0)
 		before_comma = match.group(1)
 		after_comma = match.group(2)
 		
 		if before_comma in ALIAS_LOCATION:
 			provisional_match = before_comma
+		elif all_match in ALIAS_LOCATION:
+			provisional_match = all_match
 		elif after_comma in ALIAS_LOCATION:
 			provisional_match = after_comma
 
@@ -90,6 +97,10 @@ def match_comma_structure(normalized_location):
 
 
 def ensure_coordinates(_id, force_coordinates):
+	"""
+	Iteratively looks at the parent location until it has coordinates
+	Returns closest ancestor with coordinates
+	"""
 	if not force_coordinates:
 		return _id
 	while _id != '-1' and 'latitude' not in LOCATION_DICT[_id]:
@@ -120,6 +131,4 @@ if __name__ == '__main__':
 		if total % 5000 == 0:
 			print('Processed {:6d} tweets'.format(total))
 
-	# print(count, total, 100*count/total)
-	# print(has_coordinates, total, 100*has_coordinates/total)
 	print('Done. {} tweets were updated. {:.2f}% of them matched with a location.'.format(total, 100*count/total))
