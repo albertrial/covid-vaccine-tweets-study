@@ -1,9 +1,11 @@
 import numpy as np
 import matplotlib.pyplot as plt
  
-def barplot(x_ticks, y, title='', x_label='', y_label='', label_rotation=0):
+def barplot(x_ticks, y, title='', x_label='', y_label='', label_rotation=0, figsize=(6.4, 4.8)):
 	y_pos = np.arange(len(x_ticks))
 	 
+	plt.figure(figsize=figsize)
+
 	# Create bars
 	plt.bar(y_pos, y)
 	 
