@@ -136,4 +136,121 @@ tweets = client['tweets']['#covid_vaccine']
 
 
 ###################################################################################################################
+# import numpy as np
+# import matplotlib.pyplot as plt
+# def stacked_barplot(x_ticks, y, title='', x_label='', y_label='', label_rotation=0, figsize=(6.4, 4.8)):
+# 	y_pos = np.arange(len(x_ticks))
+	 
+# 	plt.figure(figsize=figsize)
 
+# 	# Create bars
+# 	plt.bar(y_pos, y, color='mediumspringgreen', edgecolor='white')
+# 	plt.bar(y_pos, [1-e for e in y], bottom=y, color='lightcoral', edgecolor='white')
+	 
+# 	# Create names on the x-axis
+# 	plt.xticks(y_pos, x_ticks, rotation=label_rotation)
+# 	if label_rotation != 0:
+# 		plt.subplots_adjust(bottom=0.4, top=0.99)
+	 
+# 	plt.title(title)
+# 	plt.xlabel(x_label)
+# 	plt.ylabel(y_label)
+# 	# Show graphic
+# 	plt.show()
+
+
+# pip = [
+# 	{'$match': {'vaccine_acceptance.hashtag_acceptance': {'$ne': 'neutral'}}}, # Filtrar per vaccines exist
+# 	{'$unwind': '$vaccines'},
+# 	{'$group': {'_id': {'vaccine': '$vaccines', 'acceptance': '$vaccine_acceptance.hashtag_acceptance'}, 'count': {'$sum':1}}},
+# 	{'$group': {'_id': '$_id.vaccine', 'count_group': {'$push': {'acceptance': '$_id.acceptance', 'count': '$count'}}}}
+# ]
+
+# res = tweets.aggregate(pip)
+# vaccines = {vaccine['_id']: defaultdict(int, {group['acceptance']: group['count'] for group in vaccine['count_group']}) for vaccine in res if vaccine['_id'] in ['Pfizer-BioNTech', 'Moderna', 'Oxford-AstraZeneca', 'Sputnik-V']}
+# # print(states)
+# vacciness = [vaccine for vaccine in vaccines]
+# acceptance = [vaccines[vaccine]['in_favour']/(vaccines[vaccine]['in_favour'] + vaccines[vaccine]['against']) for vaccine in vaccines]
+# # vaccine_acceptance = {vaccine: vaccines[vaccine]['in_favour']/(vaccines[vaccine]['in_favour'] + vaccines[vaccine]['against']) for vaccine in vaccines}
+# # print(sorted(list(countries.values())))
+
+# stacked_barplot(vacciness, acceptance, title='', x_label='', y_label='', label_rotation=90, figsize=(6, 8))
+
+###################################################################################################################
+import numpy as np
+import matplotlib.pyplot as plt
+from bson.son import SON
+ 
+def multi_barplot(x_ticks, y, y_labels, title='', x_label='', y_label='', label_rotation=0, figsize=(6.4, 4.8)):
+	"""
+	x = [A, B, C, D]
+	y = [[a1, a2, a3, ...], [b1, b2, b3, ...], ...]
+	"""
+
+	# width of the bars
+	offset = 0.05
+	barWidth = 1/4 - offset
+	skip = 1/5
+	 
+	# The x position of bars
+	r0 = np.arange(len(x_ticks))
+	rl = [x + 0.5 for x in r0]
+	r1 = [x + skip for x in r0]
+	r2 = [x + 2*skip for x in r0]
+	r3 = [x + 3*skip for x in r0]
+	r4 = [x + 4*skip for x in r0]
+
+	y = np.array(y)	
+	# Create blue bars
+	plt.bar(r1, y[:, 0], width = barWidth, label=y_labels[0])
+	plt.bar(r2, y[:, 1], width = barWidth, label=y_labels[1])
+	plt.bar(r3, y[:, 2], width = barWidth, label=y_labels[2])
+	plt.bar(r4, y[:, 3], width = barWidth, label=y_labels[3])
+	 
+	# general layout
+	plt.xticks(rl, x_ticks, rotation=label_rotation)
+	if label_rotation != 0:
+		plt.subplots_adjust(bottom=0.4, top=0.99)
+	 
+	plt.title(title)
+	plt.xlabel(x_label)
+	plt.ylabel(y_label)
+	plt.legend()
+
+	# Show graphic
+	plt.show()
+
+pip = [
+	{'$match': {'vaccines': {'$exists': True}, 'my_geo': {'$ne': None}}},
+	{'$group': {'_id': '$my_geo.country', 'count': {'$sum':1}}},
+	{'$sort': SON([('count', pymongo.DESCENDING)])},
+	{'$limit': 10}
+]
+
+countries = tweets.aggregate(pip)
+countries = [e['_id'] for e in countries]
+
+pip = [
+	{'$match': {'vaccines': {'$exists': True}, 'my_geo.country': {'$in': countries}}},
+	{'$unwind': '$vaccines'},
+	{'$group': {'_id': {'vaccine': '$vaccines', 'country': '$my_geo.country'}, 'count': {'$sum':1}}},
+	{'$group': {'_id': '$_id.country', 'count_group': {'$push': {'vaccine': '$_id.vaccine', 'count': '$count'}}}}
+]
+
+res = tweets.aggregate(pip)
+
+countries = []
+counts = []
+vaccines = ['Pfizer-BioNTech', 'Moderna', 'Oxford-AstraZeneca', 'Sputnik-V']
+for r in res:
+	countries.append(r['_id'])
+	country_counts = [0, 0, 0, 0]
+	for d in r['count_group']:
+		if d['vaccine'] in vaccines:
+			country_counts[vaccines.index(d['vaccine'])] = d['count']
+	normalized = [e/sum(country_counts) for e in country_counts]
+	counts.append(normalized)
+
+print(countries)
+print(counts)
+multi_barplot(countries, counts, vaccines, label_rotation=90)
