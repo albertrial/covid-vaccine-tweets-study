@@ -1,6 +1,6 @@
 import re
 import pymongo
-from src.keys import MONGODB_KEY
+from keys import MONGODB_KEY
 from textblob import TextBlob
 from flair.models import TextClassifier
 from flair.data import Sentence

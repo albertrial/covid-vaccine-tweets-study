@@ -1,6 +1,6 @@
 import re
 import pymongo
-from src.keys import MONGODB_KEY
+from keys import MONGODB_KEY
 
 
 def trim_tweet_text(text):
@@ -44,7 +44,7 @@ def get_vaccines(text):
 
 ######################################################################
 if __name__ == '__main__':
-    client = pymongo.MongoClient('fpsds.synology.me', 27017, username='mongoadmin', password=MONGODB_KEY)
+    client = pymongo.MongoClient('localhost', 27017, username='mongoadmin', password=MONGODB_KEY)
     db = client['tweets']
     tweets = db['#covid_vaccine']
 
@@ -55,7 +55,6 @@ if __name__ == '__main__':
         vaccines = get_vaccines(trim_tweet_text(get_tweet_text(tw)))
 
         if len(vaccines) > 0:
-            print(vaccines)
             tweets.update_one({'_id': tw['_id']}, {'$set': {'vaccines': vaccines}})
             count_vaccine += 1
 
