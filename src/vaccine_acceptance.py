@@ -38,7 +38,7 @@ hashtags_against = [
 
 
 def clean_text(text):
-    return re.sub(r"(@)|([^0-9A-Za-z.,¡!¿?:;%$€ \t])|(\w+:\/\/\S+)|^rt|http.+?", "", text)
+    return re.sub("([^0-9A-Za-z.,¡!¿?:;%$€ \t])|(\w+:\/\/\S+)", "", text)
 
 
 def get_tweet_text(tweet):
