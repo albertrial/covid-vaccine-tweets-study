@@ -181,76 +181,179 @@ import numpy as np
 import matplotlib.pyplot as plt
 from bson.son import SON
  
-def multi_barplot(x_ticks, y, y_labels, title='', x_label='', y_label='', label_rotation=0, figsize=(6.4, 4.8)):
+# def multi_barplot(x_ticks, y, y_labels, title='', x_label='', y_label='', label_rotation=0, figsize=(6.4, 4.8)):
+# 	"""
+# 	x = [A, B, C, D]
+# 	y = [[a1, a2, a3, ...], [b1, b2, b3, ...], ...]
+# 	"""
+
+# 	# width of the bars
+# 	offset = 0.05
+# 	barWidth = 1/4 - offset
+# 	skip = 1/5
+	 
+# 	# The x position of bars
+# 	r0 = np.arange(len(x_ticks))
+# 	rl = [x + 0.5 for x in r0]
+# 	r1 = [x + skip for x in r0]
+# 	r2 = [x + 2*skip for x in r0]
+# 	r3 = [x + 3*skip for x in r0]
+# 	r4 = [x + 4*skip for x in r0]
+
+# 	y = np.array(y)	
+# 	# Create blue bars
+# 	plt.bar(r1, y[:, 0], width = barWidth, label=y_labels[0])
+# 	plt.bar(r2, y[:, 1], width = barWidth, label=y_labels[1])
+# 	plt.bar(r3, y[:, 2], width = barWidth, label=y_labels[2])
+# 	plt.bar(r4, y[:, 3], width = barWidth, label=y_labels[3])
+	 
+# 	# general layout
+# 	plt.xticks(rl, x_ticks, rotation=label_rotation)
+# 	if label_rotation != 0:
+# 		plt.subplots_adjust(bottom=0.4, top=0.99)
+	 
+# 	plt.title(title)
+# 	plt.xlabel(x_label)
+# 	plt.ylabel(y_label)
+# 	plt.legend()
+
+# 	# Show graphic
+# 	plt.show()
+
+# pip = [
+# 	{'$match': {'vaccines': {'$exists': True}, 'my_geo': {'$ne': None}}},
+# 	{'$group': {'_id': '$my_geo.country', 'count': {'$sum':1}}},
+# 	{'$sort': SON([('count', pymongo.DESCENDING)])},
+# 	{'$limit': 10}
+# ]
+
+# countries = tweets.aggregate(pip)
+# countries = [e['_id'] for e in countries]
+
+# pip = [
+# 	{'$match': {'vaccines': {'$exists': True}, 'my_geo.country': {'$in': countries}}},
+# 	{'$unwind': '$vaccines'},
+# 	{'$group': {'_id': {'vaccine': '$vaccines', 'country': '$my_geo.country'}, 'count': {'$sum':1}}},
+# 	{'$group': {'_id': '$_id.country', 'count_group': {'$push': {'vaccine': '$_id.vaccine', 'count': '$count'}}}}
+# ]
+
+# res = tweets.aggregate(pip)
+
+# countries = []
+# counts = []
+# vaccines = ['Pfizer-BioNTech', 'Moderna', 'Oxford-AstraZeneca', 'Sputnik-V']
+# for r in res:
+# 	countries.append(r['_id'])
+# 	country_counts = [0, 0, 0, 0]
+# 	for d in r['count_group']:
+# 		if d['vaccine'] in vaccines:
+# 			country_counts[vaccines.index(d['vaccine'])] = d['count']
+# 	normalized = [e/sum(country_counts) for e in country_counts]
+# 	counts.append(normalized)
+
+# print(countries)
+# print(counts)
+# multi_barplot(countries, counts, vaccines, label_rotation=90)
+
+
+
+
+def timeseries(x, y, labels, title='', x_label='', y_label='', label_rotation=0, figsize=(6.4, 4.8)):
 	"""
-	x = [A, B, C, D]
-	y = [[a1, a2, a3, ...], [b1, b2, b3, ...], ...]
+	y = [[a1,a2,a3,a4,a5, ...], [b1,b2,b3,b4,b5, ...]]
 	"""
 
-	# width of the bars
-	offset = 0.05
-	barWidth = 1/4 - offset
-	skip = 1/5
-	 
-	# The x position of bars
-	r0 = np.arange(len(x_ticks))
-	rl = [x + 0.5 for x in r0]
-	r1 = [x + skip for x in r0]
-	r2 = [x + 2*skip for x in r0]
-	r3 = [x + 3*skip for x in r0]
-	r4 = [x + 4*skip for x in r0]
+	plt.figure(figsize=figsize)
 
-	y = np.array(y)	
-	# Create blue bars
-	plt.bar(r1, y[:, 0], width = barWidth, label=y_labels[0])
-	plt.bar(r2, y[:, 1], width = barWidth, label=y_labels[1])
-	plt.bar(r3, y[:, 2], width = barWidth, label=y_labels[2])
-	plt.bar(r4, y[:, 3], width = barWidth, label=y_labels[3])
-	 
-	# general layout
-	plt.xticks(rl, x_ticks, rotation=label_rotation)
+	xs = set()
+	# multiple line plot
+	for i in range(len(y)):
+		xs = xs.union(set(x[i]))
+		# plt.plot(x, y, marker='o', markerfacecolor='blue', markersize=12, color='skyblue', linewidth=4)
+		plt.plot(x[i], y[i], marker='o', markersize=4, linewidth=2, label=labels[i])
+
+	plt.xticks(sorted(xs), sorted(xs), rotation=label_rotation)
 	if label_rotation != 0:
 		plt.subplots_adjust(bottom=0.4, top=0.99)
 	 
 	plt.title(title)
 	plt.xlabel(x_label)
 	plt.ylabel(y_label)
+	plt.ylim(0, 1)
 	plt.legend()
-
-	# Show graphic
 	plt.show()
 
-pip = [
-	{'$match': {'vaccines': {'$exists': True}, 'my_geo': {'$ne': None}}},
-	{'$group': {'_id': '$my_geo.country', 'count': {'$sum':1}}},
-	{'$sort': SON([('count', pymongo.DESCENDING)])},
-	{'$limit': 10}
-]
+def timeseries2(x, y, labels, title='', x_label='', y_label='', label_rotation=0, figsize=(6.4, 4.8)):
+	"""
+	y = [[a1,a2,a3,a4,a5, ...], [b1,b2,b3,b4,b5, ...]]
+	"""
 
-countries = tweets.aggregate(pip)
-countries = [e['_id'] for e in countries]
+	f, ax = plt.subplots(5, 1, sharex='col', figsize=figsize)
+
+	# Calculate xs
+	xs = set()
+	for t in x:
+		xs = xs.union(set(t))
+	xs = sorted(xs)
+	plt.xticks(range(len(xs)), xs, rotation=label_rotation)
+
+	# multiple line plot
+	for i in range(len(y)):
+		xx = [xs.index(t) for t in x[i]]
+		ax[i].plot(xx, y[i], marker='o', markersize=4, linewidth=2, label=labels[i])
+		ax[i].set_ylim(0, 1)
+		ax[i].set_title(labels[i])
+
+	
+	if label_rotation != 0:
+		plt.subplots_adjust(bottom=0.4, top=0.99)
+	 
+	plt.xlabel(x_label)
+	plt.ylabel(y_label)
+	f.tight_layout()
+
+	plt.show()
+
+
 
 pip = [
-	{'$match': {'vaccines': {'$exists': True}, 'my_geo.country': {'$in': countries}}},
-	{'$unwind': '$vaccines'},
-	{'$group': {'_id': {'vaccine': '$vaccines', 'country': '$my_geo.country'}, 'count': {'$sum':1}}},
-	{'$group': {'_id': '$_id.country', 'count_group': {'$push': {'vaccine': '$_id.vaccine', 'count': '$count'}}}}
+	{'$match': {'vaccine_acceptance.global_acceptance': {'$ne': 'neutral'}}},
+	{'$group': {'_id': {'date': '$date', 'acceptance': '$vaccine_acceptance.global_acceptance'}, 'count': {'$sum':1}}},
+	{'$group': {'_id': '$_id.date', 'count_group': {'$push': {'acceptance': '$_id.acceptance', 'count': '$count'}}}},
+	{'$sort': SON([('_id', pymongo.ASCENDING)])}
 ]
 
 res = tweets.aggregate(pip)
 
-countries = []
-counts = []
+g_days = []
+g_acceptances = []
+for r in res:
+	g_days.append(r['_id'])
+	d = defaultdict(int, {group['acceptance']: group['count'] for group in r['count_group']})
+	acceptance = d['in_favour']/(d['in_favour'] + d['against'])
+	g_acceptances.append(acceptance)
+
+# timeseries([days], [acceptances], ['test'], label_rotation=90)
+
+pip = [
+	{'$match': {'vaccine_acceptance.global_acceptance': {'$ne': 'neutral'}, 'vaccines': {'$exists': True}}},
+	{'$unwind': '$vaccines'},
+	{'$group': {'_id': {'date': '$date', 'acceptance': '$vaccine_acceptance.global_acceptance', 'vaccine': '$vaccines'}, 'count': {'$sum':1}}},
+	{'$group': {'_id': {'date': '$_id.date', 'vaccine': '$_id.vaccine'}, 'count_group': {'$push': {'acceptance': '$_id.acceptance', 'count': '$count'}}}},
+	{'$sort': SON([('_id.date', pymongo.ASCENDING)])}
+]
+
+res = tweets.aggregate(pip)
+
+days = defaultdict(list)
+acceptances = defaultdict(list)
 vaccines = ['Pfizer-BioNTech', 'Moderna', 'Oxford-AstraZeneca', 'Sputnik-V']
 for r in res:
-	countries.append(r['_id'])
-	country_counts = [0, 0, 0, 0]
-	for d in r['count_group']:
-		if d['vaccine'] in vaccines:
-			country_counts[vaccines.index(d['vaccine'])] = d['count']
-	normalized = [e/sum(country_counts) for e in country_counts]
-	counts.append(normalized)
+	days[r['_id']['vaccine']].append(r['_id']['date'])
+	d = defaultdict(int, {group['acceptance']: group['count'] for group in r['count_group']})
+	acceptance = d['in_favour']/(d['in_favour'] + d['against'])
+	acceptances[r['_id']['vaccine']].append(acceptance)
+acceptances = [acceptances[vac] for vac in vaccines]
+days = [days[vac] for vac in vaccines]
 
-print(countries)
-print(counts)
-multi_barplot(countries, counts, vaccines, label_rotation=90)
+timeseries2(days + [g_days], acceptances + [g_acceptances], vaccines + ['Global'], label_rotation=90)
