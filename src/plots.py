@@ -127,3 +127,34 @@ def map_choropleth(data, name, region='world', type='nb_tweets', save_filename=N
     if save_filename is not None:
         m.save(save_filename + '.html')
     return m
+
+
+def timeseries(x, y, labels, title='', x_label='', y_label='', label_rotation=0, figsize=(6.4, 4.8)):
+    """
+    y = [[a1,a2,a3,a4,a5, ...], [b1,b2,b3,b4,b5, ...]]
+    """
+
+    f, ax = plt.subplots(5, 1, sharex='col', figsize=figsize)
+
+    # Calculate xs
+    xs = set()
+    for t in x:
+        xs = xs.union(set(t))
+    xs = sorted(xs)
+    plt.xticks(range(len(xs)), xs, rotation=label_rotation)
+
+    # multiple line plot
+    for i in range(len(y)):
+        xx = [xs.index(t) for t in x[i]]
+        ax[i].plot(xx, y[i], marker='o', markersize=4, linewidth=2, label=labels[i])
+        ax[i].set_ylim(0, 1)
+        ax[i].set_title(labels[i])
+
+    if label_rotation != 0:
+        plt.subplots_adjust(bottom=0.4, top=0.99)
+
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    f.tight_layout()
+
+    plt.show()
