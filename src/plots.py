@@ -53,7 +53,7 @@ def multi_barplot(x_ticks, y, y_labels, title='', x_label='', y_label='', label_
     """
 
     # width of the bars
-    offset = 0.05
+    offset = 0.1
     barWidth = 1 / 4 - offset
     skip = 1 / 5
 
@@ -134,7 +134,7 @@ def timeseries(x, y, labels, title='', x_label='', y_label='', label_rotation=0,
     y = [[a1,a2,a3,a4,a5, ...], [b1,b2,b3,b4,b5, ...]]
     """
 
-    f, ax = plt.subplots(5, 1, sharex='col', figsize=figsize)
+    f, ax = plt.subplots(len(y), 1, sharex='col', figsize=figsize)
 
     # Calculate xs
     xs = set()
@@ -143,18 +143,21 @@ def timeseries(x, y, labels, title='', x_label='', y_label='', label_rotation=0,
     xs = sorted(xs)
     plt.xticks(range(len(xs)), xs, rotation=label_rotation)
 
+    colors = ['C0', 'C1', 'C2', 'C3', 'k']
     # multiple line plot
     for i in range(len(y)):
         xx = [xs.index(t) for t in x[i]]
-        ax[i].plot(xx, y[i], marker='o', markersize=4, linewidth=2, label=labels[i])
+        ax[i].plot(xx, y[i], marker='o', markersize=4, linewidth=2, label=labels[i], color=colors[i], markerfacecolor=colors[i])
         ax[i].set_ylim(0, 1)
-        ax[i].set_title(labels[i])
+        ax[i].set_title(labels[i] + ' ' + title)
+        ax[i].xaxis.grid(linestyle='--')
 
     if label_rotation != 0:
         plt.subplots_adjust(bottom=0.4, top=0.99)
 
     plt.xlabel(x_label)
-    plt.ylabel(y_label)
+    # plt.ylabel(y_label)
+    f.text(0, 0.6, y_label, va='center', rotation='vertical')
     f.tight_layout()
 
     plt.show()
