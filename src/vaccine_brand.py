@@ -44,7 +44,7 @@ def get_vaccines(text):
 
 ######################################################################
 if __name__ == '__main__':
-    client = pymongo.MongoClient('localhost', 27017, username='mongoadmin', password=MONGODB_KEY)
+    client = pymongo.MongoClient('fpsds.synology.me', 27017, username='mongoadmin', password=MONGODB_KEY)
     db = client['tweets']
     tweets = db['#covid_vaccine']
 
