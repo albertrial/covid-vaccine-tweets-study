@@ -3,8 +3,8 @@ import pymongo
 from keys import MONGODB_KEY
 
 
-def trim_tweet_text(text):
-    return ' '.join(re.sub("(@[A-Za-z0-9]+)|([^0-9A-Za-z \t]) | (\w+:\/\/\S+)", " ", text).split())
+def clean_text(text):
+    return re.sub("([^0-9A-Za-z.,¡!¿?:;%$€\- \t])|(\w+:\/\/\S+)", "", text)
 
 
 def get_tweet_text(tweet):
@@ -24,7 +24,7 @@ def get_vaccines(text):
         'Sputnik-V': ['sputnik', 'gamaleya', 'gam-covid-vac'],
         'CanSino': ['cansino', 'convidecia', 'ad5-ncov'],
         'Johnson & Johnson': ['johnson&johnson', 'johnson & johnson', 'j&j', 'janssen', 'ad26.cov2.s'],
-        'EpiVacCorona': ['bektop', 'vector institute', 'epivaccorona', 'epivac '],
+        'EpiVacCorona': ['bektop', 'vector institute', 'epivaccorona', 'epivac ', ' epivac'],
         'Novavax': ['novavax', 'nvx-cov2373'],
         'CureVac': ['curevac', 'cvncov'],
         'Sinopharm': ['sinopharm', 'bbibp-corv'],
@@ -52,7 +52,7 @@ if __name__ == '__main__':
 
     for tw in tweets.find({},{'_id': 1, 'full_text': 1, 'retweeted_status.full_text': 1}):
 
-        vaccines = get_vaccines(trim_tweet_text(get_tweet_text(tw)))
+        vaccines = get_vaccines(clean_text(get_tweet_text(tw)))
 
         if len(vaccines) > 0:
             tweets.update_one({'_id': tw['_id']}, {'$set': {'vaccines': vaccines}})
