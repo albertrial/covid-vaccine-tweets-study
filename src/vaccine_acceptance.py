@@ -1,6 +1,6 @@
 import re
 import pymongo
-from keys import MONGODB_KEY
+from keys import MONGODB_HOST, MONGODB_PORT, MONGODB_KEY
 from textblob import TextBlob
 from flair.models import TextClassifier
 from flair.data import Sentence
@@ -105,7 +105,7 @@ def get_vaccine_acceptance(hashtag_acceptance, text_sentiment):
 
 ######################################################################
 if __name__ == '__main__':
-    client = pymongo.MongoClient('fpsds.synology.me', 27017, username='mongoadmin', password=MONGODB_KEY)
+    client = pymongo.MongoClient(MONGODB_HOST, MONGODB_PORT, username='mongoadmin', password=MONGODB_KEY)
     db = client['tweets']
     tweets = db['#covid_vaccine']
 

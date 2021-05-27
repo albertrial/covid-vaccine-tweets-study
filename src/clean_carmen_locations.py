@@ -2,13 +2,13 @@ import pymongo
 import json
 from geotag_tweets import normalize, normalize_commas
 from collections import defaultdict
-from keys import MONGODB_KEY
+from keys import MONGODB_HOST, MONGODB_PORT, MONGODB_KEY
 
 
 def insert_locations(db=False):
 	## SET PYMONGO ##
 	if db:
-		client = pymongo.MongoClient('fpsds.synology.me', 27017, username='mongoadmin', password=MONGODB_KEY)
+		client = pymongo.MongoClient(MONGODB_HOST, MONGODB_PORT, username='mongoadmin', password=MONGODB_KEY)
 		geo_col = client['geo']['known_locations']
 
 	# Open locations file

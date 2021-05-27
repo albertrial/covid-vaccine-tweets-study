@@ -2,7 +2,7 @@ import re
 import json
 import pymongo
 from collections import defaultdict
-from keys import MONGODB_KEY
+from keys import MONGODB_HOST, MONGODB_PORT, MONGODB_KEY
 
 
 STATE_RE = re.compile(r'(.+),\s*(\w+)')								# Find Structures such Alaior, Menorca
@@ -113,7 +113,7 @@ def ensure_coordinates(_id, force_coordinates):
 
 ######################################################################
 if __name__ == '__main__':
-	client = pymongo.MongoClient('fpsds.synology.me', 27017, username='mongoadmin', password=MONGODB_KEY)
+	client = pymongo.MongoClient(MONGODB_HOST, MONGODB_PORT, username='mongoadmin', password=MONGODB_KEY)
 	tweets_col = client['tweets']['#covid_vaccine']
 
 	ALIAS_LOCATION, LOCATION_DICT = load_known_locations('../data/cleaned_locations.json')

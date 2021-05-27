@@ -1,5 +1,5 @@
 import pymongo
-from keys import MONGODB_KEY
+from keys import MONGODB_HOST, MONGODB_PORT, MONGODB_KEY
 import langid
 import pickle
 
@@ -9,7 +9,7 @@ def get_tweet_text(tweet):
     
     return tweet['full_text']
 
-client = pymongo.MongoClient('fpsds.synology.me', 27017, username='mongoadmin', password=MONGODB_KEY)
+client = pymongo.MongoClient(MONGODB_HOST, MONGODB_PORT, username='mongoadmin', password=MONGODB_KEY)
 tweets = client['tweets']['#covid_vaccine']
 
 twitter_lang = []

@@ -1,7 +1,7 @@
 import tweepy
 import pymongo
 from time import time, strftime, localtime, gmtime, sleep
-from keys import API_KEY, API_KEY_SECRET, MONGODB_KEY
+from keys import API_KEY, API_KEY_SECRET, MONGODB_HOST, MONGODB_PORT, MONGODB_KEY
 
 
 def wall_time_str(sec):
@@ -68,7 +68,7 @@ def make_query(api, db, name, search, lang=None, since=None, until=None, max_id=
 if __name__ == '__main__':
 
 	## SET PYMONGO ##
-	client = pymongo.MongoClient('fpsds.synology.me', 27017, username='mongoadmin', password=MONGODB_KEY)
+	client = pymongo.MongoClient(MONGODB_HOST, MONGODB_PORT, username='mongoadmin', password=MONGODB_KEY)
 	db = client['tweets']
 
 	## SET TWITTER DEV ##
